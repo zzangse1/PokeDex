@@ -1,7 +1,6 @@
 package com.likelion.zzangsepokemon.pokemonlist
 
 import android.net.Uri
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,7 +63,8 @@ import com.likelion.zzangsepokemon.ui.theme.RobotoCondensed
 
 @Composable
 fun PokemonListScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: PokemonListViewModel = hiltViewModel()
 ) {
     Surface(
         color = LightBlue,
@@ -84,7 +85,7 @@ fun PokemonListScreen(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-
+                viewModel.searchPokemonList(it)
             }
             Spacer(modifier = Modifier.height(16.dp))
             PokemonList(navController = navController)
@@ -140,6 +141,7 @@ fun PokemonList(
     val endReached by remember { viewModel.endReached }
     val loadError by remember { viewModel.loadError }
     val isLoading by remember { viewModel.isLoading }
+    val isSearching by remember { viewModel.isSearching }
 
     LazyColumn(
         contentPadding = PaddingValues(16.dp)
@@ -150,9 +152,10 @@ fun PokemonList(
             pokemonList.size / 2 + 1
         }
         items(itemCount) {
-            if (it >= itemCount - 1 && !endReached) {
-                viewModel.loadPokemonPaginated()
-
+            if (it >= itemCount - 1 && !endReached && !isLoading && !isSearching) {
+                LaunchedEffect(true) {
+                    viewModel.loadPokemonPaginated()
+                }
             }
             PokedexRow(
                 rowIndex = it,
@@ -263,11 +266,6 @@ fun PokedexRow(
                 )
             } else {
                 Spacer(modifier = Modifier.weight(1f))
-                PokedexEntry(
-                    entry = entries[rowIndex * 2],
-                    navController = navController,
-                    modifier = Modifier.weight(1f),
-                )
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
