@@ -209,8 +209,8 @@ fun PokemonDetailSection(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .fillMaxSize()
-            .offset(y = 100.dp)
+            .fillMaxWidth()
+            .padding(top = 50.dp ,bottom = 16.dp)
             .verticalScroll(scrollState)
     ) {
         Text(
