@@ -1,7 +1,6 @@
 package com.likelion.zzangsepokemon.pokemonlist
 
 import android.net.Uri
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -153,7 +153,9 @@ fun PokemonList(
         }
         items(itemCount) {
             if (it >= itemCount - 1 && !endReached && !isLoading && !isSearching) {
-                viewModel.loadPokemonPaginated()
+                LaunchedEffect(true) {
+                    viewModel.loadPokemonPaginated()
+                }
             }
             PokedexRow(
                 rowIndex = it,
@@ -264,11 +266,6 @@ fun PokedexRow(
                 )
             } else {
                 Spacer(modifier = Modifier.weight(1f))
-                PokedexEntry(
-                    entry = entries[rowIndex * 2],
-                    navController = navController,
-                    modifier = Modifier.weight(1f),
-                )
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
